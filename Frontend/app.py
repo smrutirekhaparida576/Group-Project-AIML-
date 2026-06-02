@@ -948,3 +948,4 @@ with st.sidebar:
     if dark != st.session_state.dark_mode:
         st.session_state.dark_mode = dark
         st.rerun()
+#final
