@@ -1,0 +1,21 @@
+{
+  "settings_version": "0.0.6",
+  "datasets_dir": "D:\\AIMLproject(FOOD CALORIE DETECTOR)\\datasets",
+  "weights_dir": "weights",
+  "runs_dir": "runs",
+  "uuid": "cc4b54ea3943f7c388d9c4489e036fba4ea39b847c181184d8cfea923c880ebc",
+  "sync": true,
+  "api_key": "",
+  "openai_api_key": "",
+  "clearml": true,
+  "comet": true,
+  "dvc": true,
+  "hub": true,
+  "mlflow": true,
+  "neptune": true,
+  "raytune": true,
+  "tensorboard": false,
+  "wandb": false,
+  "vscode_msg": true,
+  "openvino_msg": true
+}
