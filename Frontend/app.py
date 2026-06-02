@@ -5,7 +5,6 @@ import base64
 import os
 import sys
 import time
-from urllib.parse import quote
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
@@ -23,30 +22,11 @@ from nutrition import get_available_food_names, get_nutrition_data
 from recommendation import generate_recommendations
 
 MIN_FOOD_CONFIDENCE = float(os.getenv("MIN_FOOD_CONFIDENCE", "40"))
-
-FAVICON_SVG = """
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="bg" x1="8" x2="56" y1="8" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#8CC0EB"/>
-      <stop offset="1" stop-color="#BFDDF0"/>
-    </linearGradient>
-  </defs>
-  <rect width="64" height="64" rx="18" fill="url(#bg)"/>
-  <path d="M16 33h32v3c0 8.3-6.7 15-15 15h-2c-8.3 0-15-6.7-15-15v-3Z" fill="#FFF9D2"/>
-  <path d="M20 29c1-8 6.2-14 12-14s11 6 12 14H20Z" fill="#FFEBCC"/>
-  <path d="M21 37h22" stroke="#5d9fd7" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="25" cy="25" r="3" fill="#8CC0EB"/>
-  <circle cx="33" cy="22" r="3" fill="#8CC0EB"/>
-  <circle cx="41" cy="25" r="3" fill="#8CC0EB"/>
-</svg>
-"""
-
-FAVICON_DATA_URL = f"data:image/svg+xml,{quote(FAVICON_SVG)}"
+MAX_ANALYSIS_IMAGE_SIZE = int(os.getenv("MAX_ANALYSIS_IMAGE_SIZE", "640"))
 
 st.set_page_config(
     page_title="CalCount AI - Food Calorie Detector",
-    page_icon=FAVICON_DATA_URL,
+    page_icon="🥗",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -61,6 +41,8 @@ if "uploaded_image_bytes" not in st.session_state:
     st.session_state.uploaded_image_bytes = None
 if "uploaded_image_name" not in st.session_state:
     st.session_state.uploaded_image_name = None
+if "upload_key" not in st.session_state:
+    st.session_state.upload_key = 0
 if "serving_grams" not in st.session_state:
     st.session_state.serving_grams = 100
 
@@ -199,6 +181,8 @@ def build_result(food_name, prediction, serving_grams=100, serving_prediction=No
 def analyze_uploaded_food(uploaded_file):
     uploaded_file.seek(0)
     food_image = Image.open(uploaded_file).convert("RGB")
+    food_image.thumbnail((MAX_ANALYSIS_IMAGE_SIZE, MAX_ANALYSIS_IMAGE_SIZE), Image.Resampling.LANCZOS)
+
     try:
         prediction = predict_food(food_image)
     except ValueError as error:
@@ -280,6 +264,7 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
     width: calc(100% - 40px);
     margin-left: auto;
     margin-right: auto;
+    align-items: stretch;
 }}
 
 .navbar-glass {{
@@ -378,7 +363,7 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
 .stFileUploader label {{ color: var(--ink) !important; font-weight: 800; }}
 .stFileUploader section {{
     position: relative;
-    min-height: 300px;
+    min-height: 255px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -387,53 +372,34 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
     border: 2px dashed rgba(76,143,199,.52);
     background: rgba(255,255,255,.42);
     border-radius: 24px;
+    padding: 28px 22px;
     transition: transform .25s ease, border .25s ease;
     cursor: pointer;
 }}
+.stFileUploader, .stFileUploader section {{ width: 100%; }}
 .stFileUploader section:hover {{ transform: translateY(-3px); border-color: var(--blue); }}
-.stFileUploader section::before {{
-    content: "\\f0ee";
-    display: block;
-    margin-bottom: 16px;
-    color: #5da4df;
-    font: var(--fa-font-solid);
-    font-size: 4.25rem;
-    line-height: 1;
-    animation: uploadFloat 2.4s ease-in-out infinite;
-}}
-.stFileUploader section::after {{
-    content: "Upload a food image\\A JPG, JPEG, PNG, or WebP\\A up to 200 MB";
-    display: block;
-    color: var(--ink);
-    font-size: 1.35rem;
-    font-weight: 800;
-    line-height: 1.5;
-    white-space: pre-line;
-}}
-.stFileUploader section button {{
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-}}
 .stFileUploader [data-testid="stFileUploaderDropzoneInstructions"] {{
-    display: none;
+    display: block !important;
+    color: var(--ink);
+    font-weight: 800;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
 }}
 .stFileUploader [data-testid="stFileUploaderDropzoneInstructions"]::before {{
     content: "\\f0ee";
     display: block;
-    margin: 0 auto 16px;
+    margin: 0 auto 26px;
     color: #5da4df;
     font: var(--fa-font-solid);
-    font-size: 4.25rem;
+    font-size: 4.55rem;
     line-height: 1;
     animation: uploadFloat 2.4s ease-in-out infinite;
 }}
-.stFileUploader [data-testid="stFileUploaderDropzoneInstructions"] > div,
+.stFileUploader [data-testid="stFileUploaderDropzoneInstructions"] > *,
+.stFileUploader [data-testid="stFileUploaderDropzoneInstructions"] span,
 .stFileUploader [data-testid="stFileUploaderDropzoneInstructions"] small {{
-    display: none;
+    display: none !important;
 }}
 .stFileUploader [data-testid="stFileUploaderDropzoneInstructions"]::after {{
     content: "Upload a food image\\A JPG, JPEG, PNG, or WebP\\A up to 200 MB";
@@ -443,9 +409,25 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
     font-weight: 800;
     line-height: 1.5;
     white-space: pre-line;
+    max-width: 290px;
+    margin: 0 auto;
+}}
+.stFileUploader section button {{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}}
+.stFileUploader [data-testid="stFileUploaderFile"] {{
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    color: var(--ink);
 }}
 .stButton button {{
     min-height: 50px;
+    width: 100%;
     border-radius: 999px;
     font-weight: 800;
     border: 0;
@@ -496,6 +478,28 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
     .hero .row {{ min-height: 620px; }}
     .navbar-collapse {{ display: flex !important; }}
     .result-panel {{ margin-bottom: 34px; }}
+    .stFileUploader section {{ max-width: 430px; margin-left: auto; margin-right: auto; }}
+}}
+
+@media (max-width: 900px) {{
+    [data-testid="stHorizontalBlock"] {{
+        width: calc(100% - 28px);
+        gap: 22px !important;
+    }}
+    [data-testid="column"] {{
+        min-width: 100% !important;
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }}
+    .result-panel {{
+        max-width: 100%;
+    }}
+    .summary-grid {{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }}
+    .metric-grid {{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }}
 }}
 
 @media (max-width: 991px) {{
@@ -516,10 +520,38 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
     }}
 }}
 
+@media (max-width: 720px) {{
+    .section {{
+        padding: 54px 16px;
+    }}
+    .hero {{
+        padding-top: 38px;
+    }}
+    .hero h1 {{
+        font-size: clamp(2.35rem, 11vw, 3.7rem);
+    }}
+    .section-title {{
+        font-size: clamp(1.9rem, 8vw, 2.8rem);
+    }}
+    .phone-card {{
+        min-height: 340px;
+    }}
+    .summary-grid,
+    .metric-grid {{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }}
+    .result-panel .nutrition-card {{
+        padding: 14px;
+    }}
+    .advice-card {{
+        grid-column: 1 / -1;
+    }}
+}}
+
 @media (max-width: 576px) {{
     [data-testid="stHorizontalBlock"] {{
         width: calc(100% - 20px);
-        gap: 0 !important;
+        gap: 18px !important;
     }}
     [data-testid="column"] {{
         min-width: 100% !important;
@@ -530,7 +562,7 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
     .brand {{ font-size: 1rem; gap: 8px; }}
     .logo-mark {{ width: 36px; height: 36px; border-radius: 12px; }}
     .nav-link {{ padding: 9px 10px !important; }}
-    .section {{ padding: 46px 12px; }}
+    .section {{ padding: 42px 12px; }}
     .hero {{ padding-top: 34px; text-align: left; }}
     .hero h1 {{ font-size: clamp(2.35rem, 12vw, 3.35rem); line-height: 1.07; }}
     .section-title {{ font-size: clamp(1.85rem, 9vw, 2.6rem); }}
@@ -542,7 +574,7 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
         min-height: 48px;
         padding: 0 16px;
     }}
-    .phone-card {{ min-height: 320px; border-radius: 20px; margin-top: 8px; }}
+    .phone-card {{ min-height: 300px; border-radius: 20px; margin-top: 8px; }}
     .scan-ring {{ width: min(74%, 260px); padding: 9px; }}
     .scan-ring img {{ border-width: 8px; }}
     .mini-card {{ padding: 9px 11px; font-size: .8rem; border-radius: 14px; }}
@@ -553,7 +585,8 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
     .upload-box {{ min-height: 190px; border-radius: 18px; padding: 18px 12px; }}
     .upload-box h3 {{ font-size: 1.2rem; }}
     .upload-icon {{ font-size: 2.6rem; }}
-    .stFileUploader section {{ min-height: 190px; border-radius: 14px; }}
+    .stFileUploader section {{ min-height: 220px; border-radius: 18px; padding: 22px 16px; }}
+    .stFileUploader [data-testid="stFileUploaderDropzoneInstructions"]::before {{ margin-bottom: 22px; font-size: 4rem; }}
     .nutrition-card, .feature-card, .testimonial-card, .stat-card {{
         border-radius: 18px;
         padding: 16px;
@@ -570,6 +603,26 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
     .stat-card {{ min-height: 112px; }}
     .testimonial-card {{ flex-direction: column; }}
     .footer-zone {{ padding: 46px 14px 22px; }}
+}}
+
+@media (max-width: 390px) {{
+    .brand span:last-child {{
+        font-size: .92rem;
+    }}
+    .hero h1 {{
+        font-size: clamp(2.05rem, 11vw, 2.75rem);
+    }}
+    .stFileUploader [data-testid="stFileUploaderDropzoneInstructions"]::after {{
+        font-size: 1.12rem;
+        max-width: 240px;
+    }}
+    .metric-grid {{
+        grid-template-columns: 1fr;
+    }}
+    .health-badge {{
+        white-space: normal;
+        text-align: center;
+    }}
 }}
 </style>
 """
@@ -662,6 +715,7 @@ with upload_col:
             "Upload a food image",
             type=["jpg", "jpeg", "png", "webp"],
             label_visibility="collapsed",
+            key=f"food_upload_{st.session_state.upload_key}",
         )
 
         if uploaded_widget:
@@ -680,6 +734,7 @@ with upload_col:
             st.session_state.uploaded_image_name = None
             st.session_state.result = None
             st.session_state.analysis_done = False
+            st.session_state.upload_key += 1
             st.rerun()
 
     analyze_button = st.button("Analyze Image", type="primary", use_container_width=True)
@@ -690,11 +745,10 @@ with upload_col:
     if uploaded_file and analyze_button:
         st.session_state.analysis_done = False
         progress = st.progress(0, text="AI analyzing meal...")
-        for value in range(0, 101, 10):
-            progress.progress(value, text=f"AI analyzing meal... {value}%")
-            time.sleep(0.05)
+        progress.progress(20, text="AI analyzing meal...")
         try:
             st.session_state.result = analyze_uploaded_food(uploaded_file)
+            progress.progress(100, text="Analysis complete")
             st.session_state.analysis_done = True
             st.rerun()
         except ValueError as error:
