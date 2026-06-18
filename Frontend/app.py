@@ -5,6 +5,7 @@ import base64
 import os
 import sys
 import time
+from urllib.parse import quote
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
@@ -24,9 +25,29 @@ from recommendation import generate_recommendations
 MIN_FOOD_CONFIDENCE = float(os.getenv("MIN_FOOD_CONFIDENCE", "40"))
 MAX_ANALYSIS_IMAGE_SIZE = int(os.getenv("MAX_ANALYSIS_IMAGE_SIZE", "640"))
 
+FAVICON_SVG = """
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="8" x2="56" y1="8" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8CC0EB"/>
+      <stop offset="1" stop-color="#BFDDF0"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="url(#bg)"/>
+  <path d="M16 33h32v3c0 8.3-6.7 15-15 15h-2c-8.3 0-15-6.7-15-15v-3Z" fill="#FFF9D2"/>
+  <path d="M20 29c1-8 6.2-14 12-14s11 6 12 14H20Z" fill="#FFEBCC"/>
+  <path d="M21 37h22" stroke="#5d9fd7" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="25" cy="25" r="3" fill="#8CC0EB"/>
+  <circle cx="33" cy="22" r="3" fill="#8CC0EB"/>
+  <circle cx="41" cy="25" r="3" fill="#8CC0EB"/>
+</svg>
+"""
+
+FAVICON_DATA_URL = f"data:image/svg+xml,{quote(FAVICON_SVG)}"
+
 st.set_page_config(
     page_title="CalCount AI - Food Calorie Detector",
-    page_icon="🥗",
+    page_icon= FAVICON_DATA_URL ,
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -437,11 +458,18 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
 
 .nutrition-card, .feature-card, .testimonial-card, .stat-card {{
     height: 100%; border: 1px solid var(--border); border-radius: 22px;
-    background: rgba(255,255,255,.52); padding: 22px; transition: transform .25s ease, box-shadow .25s ease;
+    background: rgba(255,255,255,.52); padding: 22px;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
 }}
 .dark-mode .nutrition-card, .dark-mode .testimonial-card, .dark-mode .stat-card {{ background: rgba(255,255,255,.06); }}
-.nutrition-card:hover, .feature-card:hover, .testimonial-card:hover {{ transform: translateY(-7px); }}
+.nutrition-card:hover, .feature-card:hover, .testimonial-card:hover {{
+    transform: translateY(-7px);
+    border-color: rgba(93, 164, 223, .58);
+    box-shadow: 0 26px 58px rgba(72, 145, 210, .24);
+}}
 .nutrition-card i, .feature-card i {{ color: #5da4df; font-size: 1.65rem; }}
+.feature-card i {{ transition: transform .25s ease, color .25s ease; }}
+.feature-card:hover i {{ color: #3278ad; transform: scale(1.12) rotate(-4deg); }}
 .card-label {{ color: var(--muted); font-weight: 800; margin: 14px 0 5px; }}
 .card-value {{ font-size: 1.7rem; font-weight: 800; color: var(--ink); overflow-wrap: anywhere; }}
 .health-badge {{ display: inline-flex; padding: 9px 13px; color: #3278ad; border-radius: 999px; background: rgba(191,221,240,.58); font-size: .9rem; font-weight: 800; }}
@@ -454,14 +482,21 @@ html, body {{ max-width: 100%; overflow-x: hidden; }}
 .result-panel .card-label {{ margin: 8px 0 3px; font-size: .76rem; }}
 .result-panel .card-value {{ font-size: clamp(1rem, 2vw, 1.35rem); line-height: 1.15; }}
 .advice-card .lead-copy {{ line-height: 1.45; font-size: .92rem !important; }}
+.result-notes-wrap {{ grid-column: 1 / -1; width: 100%; margin: 0; display: grid; gap: 4px; }}
 .result-note {{ color: var(--muted); line-height: 1.45; font-size: .9rem; margin: 0; }}
 .feature-card:nth-child(odd) {{ background: linear-gradient(145deg, rgba(255,249,210,.78), rgba(191,221,240,.62)); }}
 .feature-card:nth-child(even) {{ background: linear-gradient(145deg, rgba(255,235,204,.78), rgba(140,192,235,.55)); }}
 .dark-mode .feature-card {{ background: var(--surface); }}
 .stat-card {{ display: grid; place-items: center; min-height: 150px; text-align: center; }}
 .stat-number {{ color: #4f9bd6; font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 800; }}
-.testimonial-card img {{ width: 64px; height: 64px; object-fit: cover; border-radius: 50%; border: 4px solid rgba(255,255,255,.74); }}
-.stars {{ color: #f4b84d; letter-spacing: 0; }}
+.testimonial-card img {{
+    width: 64px; height: 64px; object-fit: cover; border-radius: 50%;
+    border: 4px solid rgba(255,255,255,.74);
+    transition: transform .25s ease, border-color .25s ease;
+}}
+.testimonial-card:hover img {{ transform: scale(1.08); border-color: rgba(93, 164, 223, .72); }}
+.stars {{ color: #f4b84d; letter-spacing: 0; transition: filter .25s ease; }}
+.testimonial-card:hover .stars {{ filter: drop-shadow(0 3px 8px rgba(244, 184, 77, .38)); }}
 .footer-zone {{ padding: 70px clamp(20px, 5vw, 80px) 28px; background: rgba(255,255,255,.34); border-top: 1px solid var(--border); }}
 .dark-mode .footer-zone {{ background: rgba(6,17,28,.3); }}
 .contact-note {{ color: var(--muted); line-height: 1.7; margin-bottom: 18px; }}
@@ -838,13 +873,12 @@ with result_col:
     confidence = result.get("confidence", "--")
     serving_size = f"{result.get('serving_grams', st.session_state.serving_grams)} g" if result.get("is_food", True) else "--"
     recommendation = result.get("recommendation", "Upload a food image to generate a backend result.")
-    advice = result.get("advice", "The backend result will appear here after analysis.")
-    suggestion = result.get("suggestion", "Analyze an image to see healthy suggestions.")
-    alternatives = result.get("alternatives", "Healthy alternatives will appear here.")
+    advice = result.get("advice", "Healthy advice will appear after analysis.")
+    suggestion = result.get("suggestion", "")
+    alternatives = result.get("alternatives", "")
     nutrition_note = result.get("nutrition_note", "Waiting for image analysis.")
     top_predictions = result.get("top_predictions", [])
     top_prediction_text = ""
-
     if top_predictions:
         top_prediction_text = "Top guesses: " + ", ".join(
             f"{item.get('food', 'Unknown')} ({item.get('confidence', '--')})"
@@ -874,9 +908,13 @@ with result_col:
     <div class="nutrition-card"><i class="fa-solid fa-seedling"></i><div class="card-label">Fiber</div><div class="card-value">{fiber}</div></div>
   </div>
   <div class="nutrition-card advice-card"><i class="fa-solid fa-lightbulb"></i><div class="card-label">Recommendation</div><p class="lead-copy mb-0">{recommendation}</p></div>
-  <div class="nutrition-card advice-card"><i class="fa-solid fa-leaf"></i><div class="card-label">Healthy Advice</div><p class="lead-copy mb-1">{advice}</p><p class="lead-copy mb-1"><strong>Suggestion:</strong> {suggestion}</p><p class="lead-copy mb-0"><strong>Alternatives:</strong> {alternatives}</p></div>
-  <p class="result-note">{nutrition_note}</p>
-  <p class="result-note">{top_prediction_text}</p>
+  <div class="nutrition-card advice-card"><i class="fa-solid fa-heart-circle-check"></i><div class="card-label">Healthy Advice</div><p class="lead-copy mb-0">{advice}</p></div>
+  <div class="nutrition-card advice-card"><i class="fa-solid fa-leaf"></i><div class="card-label">Suggestion</div><p class="lead-copy mb-0">{suggestion}</p></div>
+  <div class="nutrition-card advice-card"><i class="fa-solid fa-apple-whole"></i><div class="card-label">Healthy Alternatives</div><p class="lead-copy mb-0">{alternatives}</p></div>
+  <div class="result-notes-wrap">
+    <p class="result-note">{nutrition_note}</p>
+    <p class="result-note">{top_prediction_text}</p>
+  </div>
 </div>
 </div>
 """,

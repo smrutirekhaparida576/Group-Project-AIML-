@@ -20,6 +20,12 @@ The deployed version of CalCount AI is available at:
 
 https://smrutirekha123-calcountai.hf.space/
 
+## Preview
+
+## Preview
+
+![CalCount AI Demo](Frontend/assets/demo.gif)
+
 ## Features
 
 - Upload a food image and analyze it instantly
