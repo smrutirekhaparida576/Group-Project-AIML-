@@ -24,7 +24,7 @@ https://smrutirekha123-calcountai.hf.space/
 
 ## Preview
 
-![CalCount AI Demo](Frontend/assets/demo.gif)
+![CalCount AI Demo](Frontend/assets/Demo.gif)
 
 ## Features
 
