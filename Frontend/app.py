@@ -46,7 +46,7 @@ FAVICON_SVG = """
 FAVICON_DATA_URL = f"data:image/svg+xml,{quote(FAVICON_SVG)}"
 
 st.set_page_config(
-    page_title="CalCount AI - Food Calorie Detector",
+    page_title="CalCount AI - Food Calories Estimator",
     page_icon= FAVICON_DATA_URL ,
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -1000,7 +1000,7 @@ st.markdown(
     <div class="row g-4">
 <div class="col-lg-5">
   <div class="brand mb-3"><span class="logo-mark"><i class="fa-solid fa-bowl-food"></i></span><span>CalCount AI</span></div>
-  <p class="lead-copy fs-6">AI-inspired calorie detection UI for healthier everyday food decisions.</p>
+  <p class="lead-copy fs-6">AI-inspired calorie estimation UI for healthier everyday food decisions.</p>
 </div>
 <div class="col-lg-3">
   <h3 class="fw-bold fs-5">Quick Links</h3>
