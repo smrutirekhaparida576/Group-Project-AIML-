@@ -46,7 +46,7 @@ FAVICON_SVG = """
 FAVICON_DATA_URL = f"data:image/svg+xml,{quote(FAVICON_SVG)}"
 
 st.set_page_config(
-    page_title="CalCount AI - Food Calories Estimator",
+    page_title="CalCount AI - Food Calorie Estimator",
     page_icon= FAVICON_DATA_URL ,
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -703,7 +703,7 @@ st.markdown(
       <div class="col-lg-6">
         <div class="fade-in">
           <span class="eyebrow"><i class="fa-solid fa-sparkles"></i> Friendly AI nutrition assistant</span>
-          <h1>AI Powered Food Calorie Detection</h1>
+          <h1>AI Powered Food Calorie Estimation</h1>
           <p class="lead-copy my-4">Upload your food image and instantly discover calories and nutrition details.</p>
           <div class="d-flex flex-wrap gap-3">
             <a class="btn-soft-primary" href="#demo"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Image</a>

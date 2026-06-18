@@ -8,9 +8,9 @@ app_port: 7860
 pinned: false
 ---
 
-# 🥗 CalCount AI - Food Calories Estimator
+# 🥗 CalCount AI - Food Calorie Estimator
 
-CalCount AI is an AI-powered food calories estimation web app. Users can upload a food image, and the system predicts the food item, estimates serving size, and displays nutrition details such as calories, protein, carbohydrates, fat, sugar, fiber, health score, and healthier recommendations.
+CalCount AI is an AI-powered food calorie estimation web app. Users can upload a food image, and the system predicts the food item, estimates serving size, and displays nutrition details such as calories, protein, carbohydrates, fat, sugar, fiber, health score, and healthier recommendations.
 
 The project is built mainly with Python using Streamlit for the interface, Bootstrap 5 and custom CSS for styling, and YOLO/Ultralytics models for food and serving-size prediction.
 
