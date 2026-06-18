@@ -16,11 +16,9 @@ The project is built mainly with Python using Streamlit for the interface, Boots
 
 ## Live Demo
 
-Add your deployed app link here:
+The deployed version of CalCount AI is available at:
 
-```text
 https://smrutirekha123-calcountai.hf.space/
-```
 
 ## Features
 
@@ -104,7 +102,7 @@ copy .env.example .env
 python -m streamlit run Frontend/app.py
 ```
 
-The app will open in your browser at:
+After starting the app, open:
 
 ```text
 http://localhost:8501
@@ -121,7 +119,7 @@ NUTRITION_DATASET_PATH="Indian_food_nutritional_dataset/nutrition.csv"
 MIN_FOOD_CONFIDENCE="40"
 ```
 
-Do not upload private secrets in `.env`. Use `.env.example` for public configuration examples.
+Keep private values in `.env` and use `.env.example` only for shared configuration examples.
 
 ## Docker Deployment
 
@@ -167,4 +165,3 @@ The dataset contains nutrition information for Indian food items and is used to 
 - This app is designed for educational and project demonstration purposes.
 - Predictions may vary depending on image clarity, food angle, lighting, and model confidence.
 - Nutrition values are approximate and should not be treated as medical advice.
-
