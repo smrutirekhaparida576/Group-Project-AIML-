@@ -733,8 +733,8 @@ st.markdown(
 <section class="section" id="demo">
   <div class="max-wrap text-center mb-5 fade-in">
     <span class="eyebrow">Try the demo</span>
-    <h2 class="section-title">Upload a meal image</h2>
-    <p class="lead-copy mx-auto" style="max-width:720px;">CalCount AI runs the trained food model and creates a nutrition snapshot in seconds.</p>
+    <h2 class="section-title">Upload one food item image</h2>
+    <p class="lead-copy mx-auto" style="max-width:720px;">CalCount AI works best with one clear food item at a time and creates a nutrition snapshot in seconds.</p>
   </div>
 </section>
 """,
@@ -744,10 +744,11 @@ st.markdown(
 upload_col, result_col = st.columns([0.8, 1.2], gap="large")
 with upload_col:
     uploaded_file = None
+    st.info("Please upload one clear food item at a time for accurate calorie estimation.")
 
     if st.session_state.uploaded_image_bytes is None:
         uploaded_widget = st.file_uploader(
-            "Upload a food image",
+            "Upload one food item image",
             type=["jpg", "jpeg", "png", "webp"],
             label_visibility="collapsed",
             key=f"food_upload_{st.session_state.upload_key}",

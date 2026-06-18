@@ -27,6 +27,7 @@ https://smrutirekha123-calcountai.hf.space/
 ## ✨ Features
 
 - Upload a food image and analyze it instantly
+- Supports one clear food item per image for accurate calorie estimation
 - Predict food items using a YOLO model
 - Estimate serving size using a separate serving-size model
 - Show calories and nutrition values from a local nutrition dataset
@@ -167,5 +168,6 @@ The dataset contains nutrition information for Indian food items and is used to 
 ## 📝 Notes
 
 - This app is designed for educational and project demonstration purposes.
+- The current model estimates nutrition for one main food item at a time. For best results, upload a clear image of a single food item.
 - Predictions may vary depending on image clarity, food angle, lighting, and model confidence.
 - Nutrition values are approximate and should not be treated as medical advice.
