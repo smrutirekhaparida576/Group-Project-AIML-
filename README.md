@@ -8,23 +8,23 @@ app_port: 7860
 pinned: false
 ---
 
-# CalCount AI - Food Calorie Detector
+# 🥗 CalCount AI - Food Calorie Detector
 
 CalCount AI is an AI-powered food calorie detection web app. Users can upload a food image, and the system predicts the food item, estimates serving size, and displays nutrition details such as calories, protein, carbohydrates, fat, sugar, fiber, health score, and healthier recommendations.
 
 The project is built mainly with Python using Streamlit for the interface, Bootstrap 5 and custom CSS for styling, and YOLO/Ultralytics models for food and serving-size prediction.
 
-## Live Demo
+## 🚀 Live Demo
 
 The deployed version of CalCount AI is available at:
 
 https://smrutirekha123-calcountai.hf.space/
 
-## Preview
+## 🎥 Preview
 
 ![CalCount AI Demo](Frontend/assets/Demo.gif)
 
-## Features
+## ✨ Features
 
 - Upload a food image and analyze it instantly
 - Predict food items using a YOLO model
@@ -36,7 +36,7 @@ https://smrutirekha123-calcountai.hf.space/
 - Light and dark mode support
 - Docker-ready deployment setup
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 | --- | --- |
@@ -47,7 +47,7 @@ https://smrutirekha123-calcountai.hf.space/
 | Dataset | CSV-based Indian food nutrition dataset |
 | Deployment | Docker, Hugging Face Spaces compatible |
 
-## Project Structure
+## 📁 Project Structure
 
 ```text
 .
@@ -72,7 +72,7 @@ https://smrutirekha123-calcountai.hf.space/
 `-- README.md
 ```
 
-## Installation
+## ⚙️ Installation
 
 1. Clone the repository:
 
@@ -112,7 +112,7 @@ After starting the app, open:
 http://localhost:8501
 ```
 
-## Environment Variables
+## 🔐 Environment Variables
 
 The app uses these values from `.env`:
 
@@ -125,7 +125,7 @@ MIN_FOOD_CONFIDENCE="40"
 
 Keep private values in `.env` and use `.env.example` only for shared configuration examples.
 
-## Docker Deployment
+## 🐳 Docker Deployment
 
 Build the Docker image:
 
@@ -145,7 +145,7 @@ Then open:
 http://localhost:7860
 ```
 
-## Model Details
+## 🤖 Model Details
 
 This project uses two YOLO model files:
 
@@ -154,7 +154,7 @@ This project uses two YOLO model files:
 
 The predicted food is matched with the local nutrition dataset to calculate nutrition values for the selected serving size.
 
-## Dataset
+## 📊 Dataset
 
 Nutrition values are loaded from:
 
@@ -164,7 +164,7 @@ Indian_food_nutritional_dataset/nutrition.csv
 
 The dataset contains nutrition information for Indian food items and is used to calculate calories, protein, carbohydrates, fat, sugar, and fiber.
 
-## Notes
+## 📝 Notes
 
 - This app is designed for educational and project demonstration purposes.
 - Predictions may vary depending on image clarity, food angle, lighting, and model confidence.
